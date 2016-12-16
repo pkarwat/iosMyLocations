@@ -39,8 +39,16 @@ class CurrentLocationViewController: UIViewController, CLLocationManagerDelegate
             return
         }
         
-        startLocationManager()
+        if updatingLocation {
+            stopLocationManager()
+        } else {
+            location = nil
+            lastLocationError = nil
+            startLocationManager()
+        }
+        
         updateLabels()
+        configureGetButton()
     }
     
     // MARK: -
@@ -49,6 +57,7 @@ class CurrentLocationViewController: UIViewController, CLLocationManagerDelegate
     override func viewDidLoad() {
         super.viewDidLoad()
         updateLabels()
+        configureGetButton()
     }
     
     // MARK: -
@@ -67,6 +76,7 @@ class CurrentLocationViewController: UIViewController, CLLocationManagerDelegate
         
         stopLocationManager()
         updateLabels()
+        configureGetButton()
     }
     
     func locationManager(_ manager: CLLocationManager,
@@ -83,6 +93,14 @@ class CurrentLocationViewController: UIViewController, CLLocationManagerDelegate
 
     // TODO: test
     // FIXME: testfix
+    
+    func configureGetButton() {
+        if updatingLocation {
+            getButton.setTitle("Stop", for: .normal)
+        } else {
+            getButton.setTitle("Get My Location", for: .normal)
+        }
+    }
     
     func startLocationManager() {
         if CLLocationManager.locationServicesEnabled() {
